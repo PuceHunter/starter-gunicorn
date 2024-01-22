@@ -4,6 +4,7 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
+# Configured route to /message
 @app.route('/message')
 def get_data():
     data = "Hello, World from Rikin Zala!"
