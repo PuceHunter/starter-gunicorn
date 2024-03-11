@@ -1,20 +1,8 @@
-import subprocess
-import whisper
-
-def install_ffmpeg():
-    try:
-        # Check if ffmpeg is installed
-        subprocess.run(["ffmpeg", "-version"], check=True)
-    except FileNotFoundError:
-        # If ffmpeg is not installed, install it
-        subprocess.run(["sudo", "apt", "update"])
-        subprocess.run(["sudo", "apt", "install", "ffmpeg", "-y"])
-
-# Call the install_ffmpeg function to ensure ffmpeg is installed
-install_ffmpeg()
-
 from flask import Flask, jsonify
 from flask_cors import CORS
+import assemblyai as aai
+
+aai.settings.api_key = "0fce9e03ad9e46868c892e1b1b69b48f"
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -31,12 +19,10 @@ def get_data():
 def get_audio_transcription():
     file = "ebmp-test-audio.mp3"
     
-    loaded_model = whisper.load_model('tiny.en')
-
-    transcriptions = loaded_model.transcribe(file)['text']
+    transcriber = aai.Transcriber()
     
     # Return a response indicating successful file upload
-    return jsonify({"text":transcriptions})
+    return jsonify({"text": transcriber.transcribe(file).text})
 
 if __name__ == '__main__':
     app.run()
