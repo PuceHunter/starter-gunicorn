@@ -27,25 +27,16 @@ def get_data():
     return jsonify(response_data)
 
 # Route for uploading audio files
-@app.route('/upload_audio', methods=['POST'])
-def upload_audio():
-    if 'file' not in request.files:
-        return jsonify({"error": "No file part"})
+@app.route('/get_audio_transcription')
+def get_audio_transcription():
+    file = "ebmp-test-audio.mp3"
     
-    file = request.files['file']
-    
-    if file.filename == '':
-        return jsonify({"error": "No selected file"})
-    
-    # Save the uploaded file to a specific location
-    file.save('uploads/' + file.filename)
-
     loaded_model = whisper.load_model('tiny.en')
 
     transcriptions = loaded_model.transcribe(file)['text']
     
     # Return a response indicating successful file upload
-    return jsonify({"message": "File uploaded successfully", "filename": file.filename, "text":transcriptions})
+    return jsonify({"text":transcriptions})
 
 if __name__ == '__main__':
     app.run()
